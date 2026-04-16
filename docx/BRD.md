@@ -104,7 +104,7 @@ flowchart TD
     E --> F["Đến lớp dạy"]
     F --> G["Không có check-in hệ thống"]
     G --> H["Điểm danh bằng giấy hoặc thủ công"]
-    H --> I["Lưu trữ rời rạc / khó kiểm tra tra thông tin thanh toán"]
+    H --> I["Lưu trữ rời rạc / khó kiểm tra thông tin thanh toán"]
     I --> J["Thu học phí bằng tiền mặt / chuyển khoản"]
     J --> K["Không có hệ thống theo dõi trạng thái"]
     K --> L["Khó kiểm tra:\n- Giáo viên có dạy đúng giờ?\n- Học phí đã đóng chưa?\n- Lịch có bị trùng không?"]
@@ -172,3 +172,99 @@ flowchart TD
 
     AF --> AG["Admin theo dõi & quản lý hệ thống"]
 ```
+
+## 6. Quy tắc nghiệp vụ
+
+| Mã | Quy tắc | Chi tiết |
+|----|---------|---------|
+| BR-01 | Phân quyền người dùng | Chỉ **Admin** có quyền tạo tài khoản và phân quyền cho giáo viên |
+| BR-02 | Điều kiện đăng nhập giáo viên | Giáo viên chỉ được đăng nhập khi tài khoản đã được **Admin phê duyệt** |
+| BR-03 | Phân công lớp học | Một lớp học chỉ được gán cho **một giáo viên** tại một thời điểm |
+| BR-04 | Nhận lớp | Giáo viên phải gửi yêu cầu và được **Admin duyệt** trước khi nhận lớp |
+| BR-05 | Check-in | Giáo viên phải check-in **trước giờ học 15 phút** |
+| BR-06 | Check-in trễ | Nếu check-in sau thời gian quy định → hệ thống hiển thị **cảnh báo trễ** |
+| BR-07 | Điểm danh | Giáo viên phải điểm danh sau khi buổi học bắt đầu **15 phút** |
+| BR-08 | Điểm danh trễ | Nếu điểm danh muộn → hệ thống hiển thị **cảnh báo** |
+| BR-09 | Quản lý lịch học | Lịch học được quản lý theo **ngày / tuần / tháng** |
+| BR-10 | Quản lý học phí | Mỗi học sinh có **số dư học phí riêng** |
+| BR-11 | Điều kiện học | Học sinh chỉ được tiếp tục học khi **số dư học phí > 0** |
+| BR-12 | Thanh toán học phí | Học sinh có thể thanh toán học phí thông qua **mã QR** |
+| BR-13 | Cập nhật thanh toán | Sau khi thanh toán thành công, hệ thống phải **cập nhật số dư học phí** |
+| BR-14 | Không thanh toán | Nếu học sinh không thanh toán khi hết học phí → **bị loại khỏi lớp** |
+| BR-15 | Theo dõi học phí | Giáo viên có quyền xem **trạng thái học phí** nhưng không được chỉnh sửa |
+| BR-16 | Lưu lịch sử | Hệ thống phải lưu lại toàn bộ hoạt động: **check-in, điểm danh, thanh toán** |
+| BR-17 | Trạng thái lớp học | Lớp học có 2 trạng thái: **Trống / Đã có giáo viên** |
+| BR-18 | Bảo mật dữ liệu | Người dùng chỉ được truy cập các chức năng theo **vai trò được phân quyền** |
+| BR-19 | Thời gian gia hạn thanh toán | Học sinh được phép thanh toán trong khoảng thời gian nhất định trước khi bị loại |
+
+## 7. Các bên liên quan (Stakeholders)
+
+| Vai trò | Người đại diện | Mối quan tâm chính |
+|---------|---------------|-------------------|
+| Giám đốc trung tâm (Customer) | Ông Nguyễn Tùng Khánh | Hệ thống hoạt động ổn định, quản lý hiệu quả lớp học, giáo viên và học phí |
+| Admin (End User) | Nhân viên quản lý | Dễ dàng quản lý tài khoản giáo viên, phân công lớp, theo dõi lịch học và học phí |
+| Giáo viên (End User) | Các giảng viên | Xem lịch dạy rõ ràng, nhận lớp nhanh, check-in và điểm danh thuận tiện |
+| Học sinh (End User) | Học viên trung tâm | Theo dõi lịch học, trạng thái học phí, thanh toán dễ dàng qua QR |
+| Nhà phát triển (Developer) | Nhóm phát triển phần mềm | Hệ thống rõ ràng, dễ bảo trì, dễ mở rộng |
+
+## 8. Ràng buộc và giả định
+
+### Ràng buộc:
+- Sử dụng **Flutter + Dart** để phát triển ứng dụng đa nền tảng (mobile).
+- Áp dụng mô hình **MVC** trong thiết kế hệ thống.
+- Sử dụng database: **MySQL hoặc SQLite**.
+- Không tích hợp cổng thanh toán thực tế (VNPay, MoMo), chỉ sử dụng **QR giả lập**.
+- Thời gian phát triển: **4–6 tuần**.
+
+---
+
+### Giả định:
+- Số lượng giáo viên: 5–10 người.
+- Số lượng lớp học: 10–20 lớp.
+- Số lượng học sinh mỗi lớp: 10–30 học sinh.
+- Người dùng sử dụng ứng dụng trên thiết bị di động (Android là chính).
+- Hệ thống hoạt động online, có kết nối internet.
+- Thanh toán QR chỉ mang tính mô phỏng (không kết nối ngân hàng thật).
+
+---
+
+## 9. Tiêu chí nghiệm thu (Acceptance Criteria)
+
+| Mã | Tiêu chí | Phương pháp kiểm tra |
+|----|---------|---------------------|
+| AC-01 | Admin đăng ký và đăng nhập thành công | Nhập thông tin hợp lệ → Vào hệ thống |
+| AC-02 | Giáo viên không thể đăng nhập khi chưa được duyệt | Đăng nhập → Bị từ chối |
+| AC-03 | Admin tạo tài khoản giáo viên thành công | Tạo → Giáo viên xuất hiện trong danh sách |
+| AC-04 | Giáo viên gửi yêu cầu nhận lớp | Gửi yêu cầu → Admin thấy request |
+| AC-05 | Admin duyệt và phân công lớp cho giáo viên | Duyệt → Lớp cập nhật giáo viên |
+| AC-06 | Giáo viên check-in đúng thời gian | Check-in trước 15p → Thành công |
+| AC-07 | Cảnh báo khi giáo viên check-in trễ | Check-in muộn → Hiển thị cảnh báo |
+| AC-08 | Giáo viên điểm danh đúng quy định | Điểm danh sau 15p → Lưu thành công |
+| AC-09 | Cảnh báo khi điểm danh trễ | Điểm danh muộn → Hiển thị cảnh báo |
+| AC-10 | Hiển thị lịch học theo ngày/tuần/tháng | Chọn chế độ → Hiển thị đúng |
+| AC-11 | Hiển thị số dư học phí của học sinh | Xem lớp → Hiển thị đúng số dư |
+| AC-12 | Thanh toán học phí bằng QR thành công | Quét QR → Cập nhật số dư |
+| AC-13 | Học sinh không đủ học phí bị xử lý | Không thanh toán → Bị loại khỏi lớp |
+| AC-14 | Lưu lịch sử hoạt động | Thực hiện thao tác → Có log lưu lại |
+| AC-15 | Phân quyền đúng vai trò | Admin/GV → Truy cập đúng chức năng |
+
+---
+
+## 10. Lịch trình mong muốn
+
+| Giai đoạn | Thời gian | Sản phẩm |
+|-----------|----------|---------|
+| Phân tích yêu cầu | Tuần 1 | BRD + SRS hoàn chỉnh |
+| Thiết kế hệ thống | Tuần 2 | Database, UML Diagram |
+| Phát triển | Tuần 3–4 | Ứng dụng Flutter hoàn chỉnh |
+| Kiểm thử | Tuần 5 | Báo cáo test, fix bug |
+| Hoàn thiện & Bàn giao | Tuần 6 | Hệ thống sẵn sàng demo |
+
+---
+
+## Ký duyệt
+
+| | Họ tên | Chức vụ | Ngày |
+|---|--------|--------|------|
+| **Người yêu cầu** | Nguyễn Tùng Khánh | Giám đốc trung tâm (Customer) | 16/04/2026 |
+| **Người tiếp nhận** | Nguyễn Văn B | Trưởng dự án / PM | 16/04/2026 |
