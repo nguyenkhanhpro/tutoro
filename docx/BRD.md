@@ -43,8 +43,9 @@ Hệ thống **Tutoro** được đề xuất nhằm đáp ứng các nhu cầu 
 | BO-11 | Cho phép xem chi tiết buổi học và tổng số buổi học của mỗi lớp | Trung bình |
 | BO-12 | Lưu trữ lịch sử hoạt động của giáo viên và lớp học | Trung bình |
 | BO-13 | Cung cấp giao diện đơn giản, dễ sử dụng cho Admin và giáo viên | Cao |
-| BO-14 | Hỗ trợ thanh toán học phí nhanh chóng thông qua mã QR | Cao |
-| BO-15 | Theo dõi trạng thái thanh toán của từng lớp học | Cao |
+| BO-14 | Hỗ trợ thanh toán học phí linh hoạt thông qua mã QR cho từng học sinh | Cao |
+| BO-15 | Theo dõi số dư học phí của từng học sinh và trạng thái thanh toán | Cao |
+| BO-16 | Tự động xử lý học sinh không đủ học phí (cảnh báo hoặc loại khỏi lớp) | Cao |
 
 ## 3. Phạm vi dự án
 
@@ -72,14 +73,14 @@ Hệ thống **Tutoro** được đề xuất nhằm đáp ứng các nhu cầu 
   - Hiển thị trạng thái thanh toán
 
 - Thanh toán học phí bằng mã QR:
-  - Tạo mã QR cho từng lớp học
-  - Người dùng quét mã để thanh toán
+  - Tạo mã QR cho từng học sinh hết phí
+  - Giáo viên xem mã QR cho học sinh thanh toán
   - Cập nhật trạng thái đã thanh toán
 
 - Lưu lịch sử hoạt động:
   - Check-in
   - Điểm danh
-  - Thanh toán
+  - Thanh toán của từng học sinh
 
 ---
 
@@ -103,7 +104,7 @@ flowchart TD
     E --> F["Đến lớp dạy"]
     F --> G["Không có check-in hệ thống"]
     G --> H["Điểm danh bằng giấy hoặc thủ công"]
-    H --> I["Lưu trữ rời rạc / khó kiểm tra"]
+    H --> I["Lưu trữ rời rạc / khó kiểm tra tra thông tin thanh toán"]
     I --> J["Thu học phí bằng tiền mặt / chuyển khoản"]
     J --> K["Không có hệ thống theo dõi trạng thái"]
     K --> L["Khó kiểm tra:\n- Giáo viên có dạy đúng giờ?\n- Học phí đã đóng chưa?\n- Lịch có bị trùng không?"]
@@ -151,10 +152,23 @@ flowchart TD
     T -->|Không| U["Cảnh báo trễ"]
     T -->|Có| V["Lưu điểm danh"]
 
-    V --> W["Người dùng quét QR thanh toán"]
-    W --> X["Cập nhật trạng thái học phí"]
+    V --> W["Giáo viên xem học phí học sinh"]
 
-    X --> Y["Lưu lịch sử:\n- Check-in\n- Điểm danh\n- Thanh toán"]
+    W --> X{"Học phí còn đủ?"}
+    X -->|Còn đủ| Y["Tiếp tục học"]
 
-    Y --> Z["Admin theo dõi & quản lý hệ thống"]
+    X -->|Không đủ| Z["Thông báo cần thanh toán thêm"]
+
+    Z --> AA{"Học sinh thanh toán?"}
+    AA -->|Có| AB["Quét QR & thanh toán"]
+    AB --> AC["Cập nhật số dư"]
+    AC --> Y
+
+    AA -->|Không| AD["Xóa học sinh khỏi lớp"]
+
+    Y --> AE["Tiếp tục quản lý lớp"]
+
+    AE --> AF["Lưu lịch sử:\n- Check-in\n- Điểm danh\n- Thanh toán\n- Trạng thái học sinh"]
+
+    AF --> AG["Admin theo dõi & quản lý hệ thống"]
 ```
