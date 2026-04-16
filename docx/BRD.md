@@ -43,3 +43,118 @@ Hệ thống **Tutoro** được đề xuất nhằm đáp ứng các nhu cầu 
 | BO-11 | Cho phép xem chi tiết buổi học và tổng số buổi học của mỗi lớp | Trung bình |
 | BO-12 | Lưu trữ lịch sử hoạt động của giáo viên và lớp học | Trung bình |
 | BO-13 | Cung cấp giao diện đơn giản, dễ sử dụng cho Admin và giáo viên | Cao |
+| BO-14 | Hỗ trợ thanh toán học phí nhanh chóng thông qua mã QR | Cao |
+| BO-15 | Theo dõi trạng thái thanh toán của từng lớp học | Cao |
+
+## 3. Phạm vi dự án
+
+### 3.1. Trong phạm vi (In-scope)
+
+- Xây dựng hệ thống quản lý giảng dạy đa nền tảng (mobile).
+- Chức năng đăng ký, đăng nhập cho Admin.
+- Giáo viên đăng nhập sau khi được Admin phê duyệt tài khoản.
+- Quản lý tài khoản giáo viên (tạo, duyệt, phân quyền).
+- Tạo và quản lý lớp học.
+- Hiển thị trạng thái lớp học (trống / đã có giáo viên).
+- Giáo viên gửi yêu cầu nhận lớp.
+- Admin duyệt và phân công lớp cho giáo viên.
+
+- Quản lý lịch học theo:
+  - Ngày / Tuần / Tháng
+- Giáo viên xem lịch dạy.
+
+- Check-in trước buổi học 15 phút.
+- Điểm danh học sinh sau khi bắt đầu 15 phút.
+- Hệ thống cảnh báo khi thực hiện trễ.
+
+- Quản lý học phí lớp học:
+  - Tạo thông tin học phí cho từng lớp
+  - Hiển thị trạng thái thanh toán
+
+- Thanh toán học phí bằng mã QR:
+  - Tạo mã QR cho từng lớp học
+  - Người dùng quét mã để thanh toán
+  - Cập nhật trạng thái đã thanh toán
+
+- Lưu lịch sử hoạt động:
+  - Check-in
+  - Điểm danh
+  - Thanh toán
+
+---
+
+### 3.2. Ngoài phạm vi (Out-of-scope)
+
+- Tích hợp cổng thanh toán phức tạp (VNPay, MoMo API thật)
+- Hoàn tiền (refund)
+- Hệ thống hóa đơn điện tử
+- Chat realtime
+- AI gợi ý
+- Báo cáo nâng cao
+
+# 4. Quy trình nghiệp vụ hiện tại (As-Is)
+
+```mermaid
+flowchart TD
+    A["Admin quản lý bằng Excel / ghi chép"] --> B["Tạo danh sách lớp học"]
+    B --> C["Gán giáo viên thủ công"]
+    C --> D["Giáo viên nhận lịch qua tin nhắn / lời nói"]
+    D --> E["Tự ghi nhớ lịch dạy"]
+    E --> F["Đến lớp dạy"]
+    F --> G["Không có check-in hệ thống"]
+    G --> H["Điểm danh bằng giấy hoặc thủ công"]
+    H --> I["Lưu trữ rời rạc / khó kiểm tra"]
+    I --> J["Thu học phí bằng tiền mặt / chuyển khoản"]
+    J --> K["Không có hệ thống theo dõi trạng thái"]
+    K --> L["Khó kiểm tra:\n- Giáo viên có dạy đúng giờ?\n- Học phí đã đóng chưa?\n- Lịch có bị trùng không?"]
+```
+
+### Vấn đề chính:
+- Quản lý thủ công → dễ sai sót
+- Không kiểm soát được check-in và điểm danh
+- Không có cảnh báo trễ giờ
+- Không theo dõi được trạng thái học phí
+- Lịch học dễ bị trùng hoặc thiếu đồng bộ
+
+# 5. Quy trình nghiệp vụ mong muốn (To-Be)
+```mermaid
+flowchart TD
+    A["Admin đăng nhập hệ thống"] --> B["Quản lý giáo viên"]
+    B --> C["Tạo tài khoản / Phân quyền"]
+
+    C --> D["Tạo lớp học & thiết lập học phí"]
+    D --> E["Hệ thống tạo mã QR thanh toán"]
+
+    E --> F["Hiển thị lớp (Trống / Đã có GV)"]
+
+    F --> G["Giáo viên đăng nhập"]
+    G --> H{"Đã được duyệt?"}
+
+    H -->|Không| I["Từ chối truy cập"]
+    H -->|Có| J["Xem danh sách lớp"]
+
+    J --> K["Gửi yêu cầu nhận lớp"]
+    K --> L["Admin duyệt yêu cầu"]
+
+    L --> M["Phân công lớp cho giáo viên"]
+
+    M --> N["Giáo viên xem lịch dạy"]
+    N --> O["Trước giờ học 15p: Check-in"]
+
+    O --> P{"Check-in đúng giờ?"}
+    P -->|Không| Q["Cảnh báo trễ"]
+    P -->|Có| R["Xác nhận tham gia"]
+
+    R --> S["Sau khi bắt đầu 15p: Điểm danh"]
+
+    S --> T{"Điểm danh đúng giờ?"}
+    T -->|Không| U["Cảnh báo trễ"]
+    T -->|Có| V["Lưu điểm danh"]
+
+    V --> W["Người dùng quét QR thanh toán"]
+    W --> X["Cập nhật trạng thái học phí"]
+
+    X --> Y["Lưu lịch sử:\n- Check-in\n- Điểm danh\n- Thanh toán"]
+
+    Y --> Z["Admin theo dõi & quản lý hệ thống"]
+```
