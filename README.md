@@ -1,4 +1,4 @@
-# tutoro - Phần mềm quản lí giảng dạy
+# Tutoro - Phần mềm quản lí giảng dạy
 
 ## Giới thiệu
 **Tutoro** là ứng dụng di động được phát triển bằng Flutter, hỗ trợ quản lý hoạt động giảng dạy một cách hiệu quả và tiện lợi. Ứng dụng hướng đến giáo viên, trung tâm đào tạo và người dạy học tự do, giúp tổ chức lớp học, học viên và lịch giảng dạy một cách khoa học.
