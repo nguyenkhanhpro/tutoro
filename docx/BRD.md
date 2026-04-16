@@ -228,7 +228,7 @@ flowchart TD
 
 ---
 
-## 9. Tiêu chí nghiệm thu (Acceptance Criteria)
+## 9. Tiêu chí nghiệm thu
 
 | Mã | Tiêu chí | Phương pháp kiểm tra |
 |----|---------|---------------------|
@@ -259,6 +259,45 @@ flowchart TD
 | Phát triển | Tuần 3–4 | Ứng dụng Flutter hoàn chỉnh |
 | Kiểm thử | Tuần 5 | Báo cáo test, fix bug |
 | Hoàn thiện & Bàn giao | Tuần 6 | Hệ thống sẵn sàng demo |
+
+---
+## 11. Ghi chú cho phát triển
+
+### 11.1 Kiến trúc hệ thống
+- Áp dụng mô hình MVC
+- Tách riêng:
+  - Model (Data)
+  - View (UI Flutter)
+  - Controller (Logic xử lý)
+
+### 11.2 Công nghệ sử dụng
+- Flutter + Dart
+- Database: MySQL / SQLite
+- QR: sử dụng thư viện generate QR (mock)
+
+### 11.3 Quy ước xử lý
+
+- Check-in:
+  - So sánh thời gian hiện tại với thời gian bắt đầu lớp
+- Điểm danh:
+  - Chỉ cho phép sau khi bắt đầu 15 phút
+- Học phí:
+  - Lưu dạng số dư (balance)
+  - Trừ dần theo buổi hoặc gói
+
+### 11.4 Xử lý lỗi
+
+- Sai quyền → trả về "Unauthorized"
+- Check-in trễ → trả về cảnh báo (không block)
+- Không đủ học phí → block hoặc remove học sinh
+
+### 11.5 Logging
+
+- Ghi log:
+  - Check-in
+  - Điểm danh
+  - Thanh toán
+  - Phân công lớp
 
 ---
 
