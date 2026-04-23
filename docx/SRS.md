@@ -299,7 +299,7 @@ CREATE TABLE users (
   password TEXT,
   role TEXT
 );
-
+```
 ## 9. Luồng xử lý chính
 
 ### 9.1. Xem lịch
@@ -351,7 +351,7 @@ CREATE TABLE users (
 - **Read** → API fetch  
 - **Update** → Update theo ID  
 - **Delete** → Xóa dữ liệu  
-```
+
 ---
 
 ## 10. Xử lý lỗi
