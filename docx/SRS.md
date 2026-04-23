@@ -200,3 +200,209 @@ Attendance {
   schedule_id: string,
   status: string
 }
+
+## 5. Dữ liệu ban đầu / Seed Data
+
+### 5.1. Tài khoản / Accounts
+
+| Email | Mật khẩu | Vai trò | ID |
+|-------|----------|---------|-----|
+| `admin@tutoro.com` | `123456` | Admin | ADMIN001 |
+| `teacher1@tutoro.com` | `123456` | Teacher | TCH001 |
+| `student1@tutoro.com` | `123456` | Student | STD001 |
+
+
+---
+
+### 5.2. Lớp học / Classes
+
+| ID | Tên lớp | Giảng viên | Khóa học |
+|----|--------|-----------|----------|
+| CLS001 | Flutter Basic | TCH001 | Mobile Development |
+| CLS002 | Web Fullstack | TCH001 | Web Development |
+
+---
+
+### 5.3. Lịch học / Schedules
+
+| ID | Lớp | Thời gian | Phòng |
+|----|-----|-----------|-------|
+| SCH001 | CLS001 | 2026-04-25 07:00 | A1 |
+| SCH002 | CLS001 | 2026-04-27 07:00 | A1 |
+| SCH003 | CLS002 | 2026-04-26 18:00 | B2 |
+
+---
+
+### 5.4. Tham số hệ thống / System Parameters
+
+| Tham số | Giá trị |
+|---------|---------|
+| Thời gian nhắc mặc định | **15 phút trước giờ học** |
+| Timezone | **UTC+7** |
+| Định dạng thời gian | **YYYY-MM-DD HH:mm** |
+
+---
+
+## 6. Giao diện hệ thống / System Interface
+
+### 6.1. Màn hình chính (sau đăng nhập)
+
+| Tab | Mô tả |
+|-----|------|
+| **Dashboard** | Tổng quan hệ thống |
+| **Lịch học** | Hiển thị lịch theo ngày/tuần |
+| **Lớp học** | Danh sách lớp |
+| **Tài khoản** | Thông tin người dùng |
+
+---
+
+### 6.2. Màn hình chức năng
+
+| Màn hình | Mô tả |
+|----------|------|
+| Login | Đăng nhập |
+| Dashboard | Tổng quan |
+| Class Management | Quản lý lớp |
+| Schedule | Quản lý lịch |
+| Attendance | Điểm danh |
+| User Management | Quản lý user |
+
+---
+
+## 7. Ràng buộc kỹ thuật / Technical Constraints
+
+1. **Online-first** — Hệ thống yêu cầu kết nối internet
+2. **Backend API** — Giao tiếp qua REST API
+3. **Authentication** — JWT token
+4. **Multi-user** — Hỗ trợ nhiều người dùng
+5. **Platform** — Mobile (Flutter)
+6. **Push Notification** — Firebase Cloud Messaging
+7. **Time Sync** — Đồng bộ server time
+
+---
+
+## 8. Thiết kế dữ liệu / Data Design
+
+### 8.1. Bảng Users
+
+```sql
+CREATE TABLE users (
+  id TEXT PRIMARY KEY,
+  email TEXT UNIQUE,
+  password TEXT,
+  role TEXT
+);
+```
+
+### 8.2. Bảng Schedules
+```sql
+CREATE TABLE schedules (
+  id TEXT PRIMARY KEY,
+  class_id TEXT,
+  time DATETIME,
+  room TEXT
+);
+```
+
+### 8.3. Bảng Classes
+```sql
+CREATE TABLE classes (
+  id TEXT PRIMARY KEY,
+  name TEXT UNIQUE,
+  teacher_id TEXT
+);
+```
+### 8.4. Bảng Attendance 
+```sql
+CREATE TABLE attendance  (
+  id TEXT PRIMARY KEY,
+  student_id TEXT,
+  schedule_id TEXT,
+  status TEXT
+);
+```
+
+## 9. Luồng xử lý chính
+
+### 9.1. Xem lịch
+
+- User đăng nhập
+- Gọi API lấy schedule theo user
+- Hiển thị danh sách
+
+---
+
+### 9.2. Tạo lịch học
+
+- Admin nhập:
+  - Lớp học
+  - Thời gian
+  - Phòng học
+- Validate:
+  - Không trùng lịch
+- Lưu vào database
+- Cập nhật UI
+
+---
+
+### 9.3. Điểm danh
+
+- Giảng viên chọn lớp
+- Hiển thị danh sách học viên
+- Tick trạng thái:
+  - Present (Có mặt)
+  - Absent (Vắng)
+- Lưu dữ liệu
+
+---
+
+### 9.4. Notification
+
+- Khi có lịch học:
+  - Lấy thời gian học
+  - Trừ 15 phút
+- Gửi push notification
+- Nội dung:
+  - "Sắp đến giờ học [Tên lớp]"
+
+---
+
+### 9.5. CRUD
+
+- **Create** → Insert DB  
+- **Read** → API fetch  
+- **Update** → Update theo ID  
+- **Delete** → Xóa dữ liệu  
+
+---
+
+## 10. Xử lý lỗi
+
+| Trường hợp | Xử lý |
+|-----------|------|
+| Sai login | Thông báo lỗi |
+| Trùng lịch | Không cho tạo |
+| Không có dữ liệu | Hiển thị rỗng |
+| Lỗi server | Hiển thị lỗi |
+| Mất kết nối | Hiển thị offline mode |
+
+---
+
+## 11. Bảo mật
+
+- JWT Authentication  
+- Hash password (bcrypt)  
+- Role-based access control  
+- API protected bằng token  
+- Không expose dữ liệu nhạy cảm  
+
+---
+
+## 12. Hướng mở rộng
+
+- Web Admin Dashboard  
+- AI gợi ý lịch học  
+- Thống kê tiến độ học  
+- Thanh toán học phí  
+- Chat Teacher - Student  
+- Đồng bộ đa thiết bị  
