@@ -187,6 +187,12 @@ Class {
   teacher_id: string
 }
 
+Student {
+  id: string,
+  name: string,
+  email: string
+}
+
 Schedule {
   id: string,
   class_id: string,
@@ -200,6 +206,8 @@ Attendance {
   schedule_id: string,
   status: string
 }
+
+---
 
 ## 5. Dữ liệu ban đầu / Seed Data
 
