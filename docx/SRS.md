@@ -206,7 +206,7 @@ Attendance {
   schedule_id: string,
   status: string
 }
-
+```
 ---
 
 ## 5. Dữ liệu ban đầu / Seed Data
