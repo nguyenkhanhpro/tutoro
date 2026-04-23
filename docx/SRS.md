@@ -351,7 +351,7 @@ CREATE TABLE users (
 - **Read** → API fetch  
 - **Update** → Update theo ID  
 - **Delete** → Xóa dữ liệu  
-
+```
 ---
 
 ## 10. Xử lý lỗi
